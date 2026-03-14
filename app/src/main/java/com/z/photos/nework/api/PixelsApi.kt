@@ -1,4 +1,4 @@
-package com.z.photos.nework.`interface`
+package com.z.photos.nework.api
 
 import com.z.photos.nework.response.CuratedResponse
 import retrofit2.http.GET
