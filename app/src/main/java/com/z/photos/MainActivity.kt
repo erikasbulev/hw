@@ -12,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.z.photos.ui.theme.HomeworkTheme
-import dagger.hilt.EntryPoint
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
