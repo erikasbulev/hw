@@ -3,6 +3,7 @@ package com.z.photos.business.repositories
 import com.z.photos.business.datasources.LocalDataSource
 import com.z.photos.business.datasources.RemoteDataSource
 import com.z.photos.business.entities.Photo
+import com.z.photos.repository.PhotoRepositoryImpl
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -26,7 +27,7 @@ class PhotoRepositoryImplTest {
         val remoteData = listOf(
             Photo(
                 id = 1,
-                photUrl = "url",
+                photoUrl = "url",
                 isFavorite = false,
                 photoThumbnailUrl = "thumb_url",
                 artist = "artist"

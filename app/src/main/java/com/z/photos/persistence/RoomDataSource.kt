@@ -9,7 +9,7 @@ class RoomDataSource @Inject constructor(
     private val localPhotoDao: LocalPhotoDao,
 ) : LocalDataSource {
 
-    override suspend fun getPhotos(page: Int): List<Photo>? {
+    override suspend fun getPhotos(): List<Photo>? {
         return emptyList()
     }
 }

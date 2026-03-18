@@ -6,9 +6,8 @@ import androidx.room.PrimaryKey
 @Entity
 data class LocalPhoto(
     @PrimaryKey val id: Long,
-    val photUrl: String,
+    val photoUrl: String,
     val isFavorite: Boolean,
     val photoThumbnailUrl: String,
     val artist: String,
-    val page: Int,
 )
