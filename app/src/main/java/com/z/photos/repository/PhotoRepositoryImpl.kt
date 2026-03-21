@@ -19,6 +19,10 @@ class PhotoRepositoryImpl @Inject constructor(
         return localDataSource.getPhotos(page)
     }
 
+    override suspend fun getLocalPhoto(id: Long): Photo? {
+        return localDataSource.getPhoto(id)
+    }
+
     override suspend fun savePhotos(page: Int, photos: List<Photo>) {
         localDataSource.persistPhotos(page = page, remotePhotos = photos)
     }

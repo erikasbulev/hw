@@ -6,5 +6,7 @@ interface LocalDataSource {
 
     suspend fun getPhotos(page: Int): List<Photo>
 
+    suspend fun getPhoto(id: Long): Photo?
+
     suspend fun persistPhotos(page: Int, remotePhotos: List<Photo>)
 }

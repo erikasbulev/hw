@@ -14,6 +14,10 @@ class RoomDataSource @Inject constructor(
         return localPhotoDao.getPhotos(page).map { it.toPhoto() }
     }
 
+    override suspend fun getPhoto(id: Long): Photo? {
+        return localPhotoDao.getPhotoById(id)?.toPhoto()
+    }
+
     override suspend fun persistPhotos(page: Int, remotePhotos: List<Photo>) {
         localPhotoDao.insertPhotos(remotePhotos.map { it.toLocalPhoto(page) })
     }

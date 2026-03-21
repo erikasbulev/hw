@@ -12,6 +12,9 @@ interface LocalPhotoDao {
     @Query("SELECT * FROM localphoto WHERE page = :page")
     fun getPhotos(page: Int): List<LocalPhoto>
 
+    @Query("SELECT * FROM localphoto WHERE id = :id LIMIT 1")
+    fun getPhotoById(id: Long): LocalPhoto?
+
     @Insert(onConflict = REPLACE)
     fun insertPhotos(remotePhotos: List<LocalPhoto>)
 }

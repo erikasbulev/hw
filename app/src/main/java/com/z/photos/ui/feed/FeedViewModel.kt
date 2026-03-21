@@ -19,7 +19,6 @@ class FeedViewModel @Inject constructor(
     private val _photos = MutableStateFlow<List<Photo>>(emptyList())
     val photos: StateFlow<List<Photo>> = _photos
 
-
     init {
         viewModelScope.launch {
             paginationMediator.getPhotosFlow()

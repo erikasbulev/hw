@@ -15,15 +15,18 @@ import kotlin.concurrent.atomics.AtomicInt
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.concurrent.atomics.incrementAndFetch
 
+private const val FIRST_PAGE = 1
+private const val PAGE_BUFFER_CAPACITY = 1
+
 @OptIn(ExperimentalAtomicApi::class, ExperimentalCoroutinesApi::class)
 class PaginationMediator @Inject constructor(
     private val photoRepository: PhotoRepository,
 ) {
 
-    private val page = AtomicInt(1)
+    private val page = AtomicInt(FIRST_PAGE)
     private val pageRequests = MutableSharedFlow<Int>(
-        replay = 1,
-        extraBufferCapacity = 1
+        replay = PAGE_BUFFER_CAPACITY,
+        extraBufferCapacity = PAGE_BUFFER_CAPACITY
     )
 
 
@@ -51,6 +54,6 @@ class PaginationMediator @Inject constructor(
     }
 
     fun resetPagination() {
-        page.store(1)
+        page.store(FIRST_PAGE)
     }
 }
