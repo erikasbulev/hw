@@ -9,4 +9,8 @@ interface LocalDataSource {
     suspend fun getPhoto(id: Long): Photo?
 
     suspend fun persistPhotos(page: Int, remotePhotos: List<Photo>)
+
+    suspend fun favorite(id: Long)
+
+    suspend fun unfavorite(id: Long)
 }

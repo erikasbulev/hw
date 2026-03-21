@@ -24,6 +24,14 @@ class PhotoRepositoryImpl @Inject constructor(
     }
 
     override suspend fun savePhotos(page: Int, photos: List<Photo>) {
-        localDataSource.persistPhotos(page = page, remotePhotos = photos)
+        localDataSource.persistPhotos(page, photos)
+    }
+
+    override suspend fun favoritePhoto(photoId: Long) {
+        localDataSource.favorite(photoId)
+    }
+
+    override suspend fun unfavoritePhoto(photoId: Long) {
+        localDataSource.unfavorite(photoId)
     }
 }

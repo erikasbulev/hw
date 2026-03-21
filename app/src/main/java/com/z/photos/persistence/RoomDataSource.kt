@@ -2,12 +2,16 @@ package com.z.photos.persistence
 
 import com.z.photos.business.datasources.LocalDataSource
 import com.z.photos.business.entities.Photo
+import com.z.photos.persistence.room.dao.FavoritePhotoDao
 import com.z.photos.persistence.room.dao.LocalPhotoDao
+import com.z.photos.persistence.room.entities.FavoritePhoto
 import com.z.photos.persistence.room.entities.LocalPhoto
+import com.z.photos.persistence.room.entities.LocalPhotoWithFavorite
 import javax.inject.Inject
 
 class RoomDataSource @Inject constructor(
     private val localPhotoDao: LocalPhotoDao,
+    private val favoritePhotoDao: FavoritePhotoDao,
 ) : LocalDataSource {
 
     override suspend fun getPhotos(page: Int): List<Photo> {
@@ -22,23 +26,30 @@ class RoomDataSource @Inject constructor(
         localPhotoDao.insertPhotos(remotePhotos.map { it.toLocalPhoto(page) })
     }
 
-    private fun LocalPhoto.toPhoto(): Photo {
+    override suspend fun favorite(id: Long) {
+        favoritePhotoDao.insertFavorite(FavoritePhoto(id))
+    }
+
+    override suspend fun unfavorite(id: Long) {
+        favoritePhotoDao.deleteFavorite(FavoritePhoto(id))
+    }
+
+    private fun LocalPhotoWithFavorite.toPhoto(): Photo {
         return Photo(
-            id = this.id,
-            photoUrl = this.photoUrl,
-            isFavorite = this.isFavorite,
-            photoThumbnailUrl = this.photoThumbnailUrl,
-            artist = this.artist,
+            id = id,
+            photoUrl = photoUrl,
+            isFavorite = isFavorite,
+            photoThumbnailUrl = photoThumbnailUrl,
+            artist = artist,
         )
     }
 
     private fun Photo.toLocalPhoto(page: Int): LocalPhoto {
         return LocalPhoto(
-            id = this.id,
-            photoUrl = this.photoUrl,
-            isFavorite = this.isFavorite,
-            photoThumbnailUrl = this.photoThumbnailUrl,
-            artist = this.artist,
+            id = id,
+            photoUrl = photoUrl,
+            photoThumbnailUrl = photoThumbnailUrl,
+            artist = artist,
             page = page,
         )
     }

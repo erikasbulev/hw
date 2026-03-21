@@ -1,5 +1,6 @@
 package com.z.photos.ui.detail
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,6 +9,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -18,7 +21,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -33,6 +38,7 @@ private const val SECTION_SPACING_DP = 12
 private const val LABEL_ARTIST = "Artist"
 private const val LABEL_ID = "ID"
 private const val CONTENT_DESC_BACK = "Back"
+private const val CONTENT_DESC_FAVORITE = "Favorite"
 
 @Composable
 fun DetailScreen(
@@ -44,6 +50,7 @@ fun DetailScreen(
         DetailContent(
             photo = it,
             onBack = onBack,
+            onFavoriteClick = { viewModel.toggleFavorite() },
         )
     }
 }
@@ -53,6 +60,7 @@ fun DetailScreen(
 private fun DetailContent(
     photo: Photo,
     onBack: () -> Unit,
+    onFavoriteClick: () -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -74,14 +82,26 @@ private fun DetailContent(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            AsyncImage(
-                model = photo.photoUrl,
-                contentDescription = photo.artist,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(IMAGE_HEIGHT_DP.dp),
-                contentScale = ContentScale.Crop,
-            )
+            Box {
+                AsyncImage(
+                    model = photo.photoUrl,
+                    contentDescription = photo.artist,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(IMAGE_HEIGHT_DP.dp),
+                    contentScale = ContentScale.Crop,
+                )
+                IconButton(
+                    onClick = onFavoriteClick,
+                    modifier = Modifier.align(Alignment.BottomEnd),
+                ) {
+                    Icon(
+                        imageVector = if (photo.isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                        contentDescription = CONTENT_DESC_FAVORITE,
+                        tint = if (photo.isFavorite) Color.Red else Color.White,
+                    )
+                }
+            }
             Spacer(modifier = Modifier.height(CONTENT_PADDING_DP.dp))
             Column(modifier = Modifier.padding(horizontal = CONTENT_PADDING_DP.dp)) {
                 Text(
@@ -119,6 +139,7 @@ private fun DetailScreenPreview() {
                 isFavorite = false,
             ),
             onBack = {},
+            onFavoriteClick = {},
         )
     }
 }

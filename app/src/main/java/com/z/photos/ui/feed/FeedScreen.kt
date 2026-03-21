@@ -9,8 +9,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -18,6 +23,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -51,6 +57,7 @@ fun FeedScreen(
             PhotoItem(
                 photo = photo,
                 onClick = { onPhotoClick(photo) },
+                onFavoriteClick = { viewModel.toggleFavorite(photo) },
             )
         }
 
@@ -76,6 +83,7 @@ fun LoadingItem() {
 fun PhotoItem(
     photo: Photo,
     onClick: () -> Unit,
+    onFavoriteClick: () -> Unit,
 ) {
     Card(
         modifier = Modifier
@@ -84,14 +92,26 @@ fun PhotoItem(
             .clickable(onClick = onClick)
     ) {
         Column {
-            AsyncImage(
-                model = photo.photoThumbnailUrl,
-                contentDescription = photo.artist,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(PHOTO_THUMBNAIL_HEIGHT_DP.dp),
-                contentScale = ContentScale.None,
-            )
+            Box {
+                AsyncImage(
+                    model = photo.photoThumbnailUrl,
+                    contentDescription = photo.artist,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(PHOTO_THUMBNAIL_HEIGHT_DP.dp),
+                    contentScale = ContentScale.Crop,
+                )
+                IconButton(
+                    onClick = onFavoriteClick,
+                    modifier = Modifier.align(Alignment.BottomEnd),
+                ) {
+                    Icon(
+                        imageVector = if (photo.isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                        contentDescription = null,
+                        tint = if (photo.isFavorite) Color.Red else Color.White,
+                    )
+                }
+            }
             Text(
                 text = photo.artist,
                 modifier = Modifier.padding(ARTIST_TEXT_PADDING_DP.dp),

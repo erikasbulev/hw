@@ -28,4 +28,17 @@ class DetailViewModel @Inject constructor(
             _photoDetailsState.value = repository.getLocalPhoto(photoId)
         }
     }
+
+    fun toggleFavorite() {
+        val current = _photoDetailsState.value ?: return
+        val newFavorite = !current.isFavorite
+        _photoDetailsState.value = current.copy(isFavorite = newFavorite)
+        viewModelScope.launch(Dispatchers.IO) {
+            if (newFavorite) {
+                repository.favoritePhoto(current.id)
+            } else {
+                repository.unfavoritePhoto(current.id)
+            }
+        }
+    }
 }
