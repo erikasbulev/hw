@@ -4,7 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.z.photos.business.entities.Photo
 import com.z.photos.business.repositories.PhotoRepository
-import jakarta.inject.Inject
+import javax.inject.Inject
 
 class FeedPagingSource @Inject constructor(
     private val photoRepository: PhotoRepository,
@@ -14,7 +14,7 @@ class FeedPagingSource @Inject constructor(
         val page = params.key ?: 1
 
         return try {
-            val photos = photoRepository.getPhotos(
+            val photos = photoRepository.getRemotePhotos(
                 page = page
             )
 

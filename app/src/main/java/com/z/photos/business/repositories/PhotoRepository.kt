@@ -3,5 +3,9 @@ package com.z.photos.business.repositories
 import com.z.photos.business.entities.Photo
 
 interface PhotoRepository {
-    suspend fun getPhotos(page: Int): List<Photo>
+    suspend fun getRemotePhotos(page: Int): List<Photo>
+
+    suspend fun getLocalPhotos(page: Int): List<Photo>
+
+    suspend fun savePhotos(page: Int, photos: List<Photo>)
 }

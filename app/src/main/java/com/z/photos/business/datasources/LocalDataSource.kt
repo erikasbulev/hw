@@ -4,5 +4,7 @@ import com.z.photos.business.entities.Photo
 
 interface LocalDataSource {
 
-    suspend fun getPhotos(): List<Photo>?
+    suspend fun getPhotos(page: Int): List<Photo>
+
+    suspend fun persistPhotos(page: Int, remotePhotos: List<Photo>)
 }

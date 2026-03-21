@@ -10,4 +10,5 @@ data class LocalPhoto(
     val isFavorite: Boolean,
     val photoThumbnailUrl: String,
     val artist: String,
+    val page: Int,
 )

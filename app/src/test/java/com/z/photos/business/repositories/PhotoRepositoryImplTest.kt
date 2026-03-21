@@ -36,7 +36,7 @@ class PhotoRepositoryImplTest {
         `when`(localDataSource.getPhotos(page)).thenReturn(null)
         `when`(remoteDataSource.getPhotos(page)).thenReturn(remoteData)
 
-        val actualData = fixture.getPhotos(page)
+        val actualData = fixture.getRemotePhotos(page)
 
         verify(remoteDataSource).getPhotos(page)
         assertEquals(remoteData, actualData)

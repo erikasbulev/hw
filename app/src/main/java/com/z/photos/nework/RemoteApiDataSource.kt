@@ -4,7 +4,7 @@ import com.z.photos.business.datasources.RemoteDataSource
 import com.z.photos.business.entities.Photo
 import com.z.photos.nework.api.PixelsApi
 import com.z.photos.nework.response.CuratedResponse
-import jakarta.inject.Inject
+import javax.inject.Inject
 
 private const val PER_PAGE = 20
 
