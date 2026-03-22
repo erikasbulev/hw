@@ -19,7 +19,7 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class TestModuleForNow {
+abstract class AppBindingsModule {
 
     @Binds
     abstract fun bindPhotoRepository(impl: PhotoRepositoryImpl): PhotoRepository

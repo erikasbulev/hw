@@ -19,7 +19,7 @@ class RemoteApiDataSource @Inject constructor(
                 perPage = PER_PAGE,
                 page = page,
             ).photos.map { it.toPhoto() }
-        } catch (e: HttpException) {
+        } catch (_: HttpException) {
             emptyList()
         }
     }
