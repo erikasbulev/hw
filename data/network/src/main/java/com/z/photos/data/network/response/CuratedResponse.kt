@@ -6,5 +6,5 @@ data class CuratedResponse(
     val page: Int,
     val perPage: Int,
     val photos: List<PhotoEntity>,
-    val nextPage: String,
+    val nextPage: String?,
 )

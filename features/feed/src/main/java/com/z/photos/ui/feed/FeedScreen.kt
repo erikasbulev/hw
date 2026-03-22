@@ -51,8 +51,7 @@ fun FeedScreen(
     viewModel: FeedViewModel = hiltViewModel(),
     onPhotoClick: (Photo) -> Unit,
 ) {
-    val photos by viewModel.photos.collectAsState()
-    val isRefreshing by viewModel.isRefreshing.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = {
@@ -65,7 +64,7 @@ fun FeedScreen(
         }
     ) { innerPadding ->
         PullToRefreshBox(
-            isRefreshing = isRefreshing,
+            isRefreshing = uiState.isRefreshing,
             onRefresh = { viewModel.onRefresh() },
             modifier = Modifier
                 .fillMaxSize()
@@ -74,9 +73,9 @@ fun FeedScreen(
             LazyVerticalGrid(
                 columns = GridCells.Fixed(FEED_GRID_COLUMNS)
             ) {
-                itemsIndexed(photos) { index, photo ->
-                    if (index >= photos.size - PREFETCH_THRESHOLD) {
-                        LaunchedEffect(Unit) {
+                itemsIndexed(uiState.photos) { index, photo ->
+                    if (uiState.hasMore && index >= uiState.photos.size - PREFETCH_THRESHOLD) {
+                        LaunchedEffect(index) {
                             viewModel.onRequestMoreItems()
                         }
                     }
@@ -87,8 +86,10 @@ fun FeedScreen(
                     )
                 }
 
-                item {
-                    LoadingItem()
+                if (uiState.hasMore) {
+                    item {
+                        LoadingItem()
+                    }
                 }
             }
         }

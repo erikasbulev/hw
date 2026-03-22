@@ -9,52 +9,49 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
-import kotlin.concurrent.atomics.AtomicInt
-import kotlin.concurrent.atomics.ExperimentalAtomicApi
-import kotlin.concurrent.atomics.incrementAndFetch
 
 private const val FIRST_PAGE = 1
-private const val PAGE_BUFFER_CAPACITY = 1
 
-@OptIn(ExperimentalAtomicApi::class, ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 class PaginationMediator @Inject constructor(
     private val photoRepository: PhotoRepository,
 ) {
 
-    private val page = AtomicInt(FIRST_PAGE)
-    private val pageRequests = MutableSharedFlow<Int>(
-        replay = PAGE_BUFFER_CAPACITY,
-        extraBufferCapacity = PAGE_BUFFER_CAPACITY
-    )
+    private val pageRequests = MutableSharedFlow<Int>(extraBufferCapacity = 1)
 
-    fun getPhotosFlow(): Flow<List<Photo>> {
-        return pageRequests.flatMapConcat { page ->
+    fun getPhotosFlow(): Flow<PaginationState> {
+        return pageRequests.flatMapConcat { requestedPage ->
             flow {
-                val local = photoRepository.getLocalPhotos(page)
-                if (local.isNotEmpty() && !photoRepository.isCacheStale(page)) {
-                    emit(local)
+                val local = photoRepository.getLocalPhotos(requestedPage)
+                if (local.isNotEmpty() && !photoRepository.isCacheStale(requestedPage)) {
+                    emit(PaginationState(photos = local, hasMore = true, nextPage = requestedPage + 1))
                 } else {
-                    val remote = photoRepository.getRemotePhotos(page)
-                    photoRepository.savePhotos(page, remote)
-
-                    val saved = photoRepository.getLocalPhotos(page)
-                    emit(saved)
+                    val remote = photoRepository.getRemotePhotos(requestedPage)
+                    if (remote.isEmpty()) {
+                        emit(PaginationState(photos = emptyList(), hasMore = false, nextPage = requestedPage))
+                    } else {
+                        photoRepository.savePhotos(requestedPage, remote)
+                        val saved = photoRepository.getLocalPhotos(requestedPage)
+                        emit(PaginationState(photos = saved, hasMore = true, nextPage = requestedPage + 1))
+                    }
                 }
             }.flowOn(Dispatchers.IO)
-        }.onEach {
-            page.incrementAndFetch()
         }
     }
 
-    fun requestMorePhotos() {
-        pageRequests.tryEmit(page.load())
+    fun requestPage(page: Int) {
+        pageRequests.tryEmit(page)
     }
 
     suspend fun refresh() {
         photoRepository.clearPhotos()
-        page.store(FIRST_PAGE)
         pageRequests.emit(FIRST_PAGE)
     }
+
+    data class PaginationState(
+        val photos: List<Photo>,
+        val hasMore: Boolean,
+        val nextPage: Int,
+    )
 }

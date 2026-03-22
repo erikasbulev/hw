@@ -1,4 +1,4 @@
-package com.z.photos.domain.time
+package com.z.photos.data.persistence.time
 
 interface TimeProvider {
 

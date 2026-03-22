@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
+private const val FIRST_PAGE = 1
+
 @HiltViewModel
 class FeedViewModel @Inject constructor(
     private val paginationMediator: PaginationMediator,
@@ -19,18 +21,21 @@ class FeedViewModel @Inject constructor(
     private val favoriteChangeNotifier: FavoriteChangeNotifier,
 ) : ViewModel() {
 
-    private val _photos = MutableStateFlow<List<Photo>>(emptyList())
-    val photos: StateFlow<List<Photo>> = _photos
-
-    private val _isRefreshing = MutableStateFlow(false)
-    val isRefreshing: StateFlow<Boolean> = _isRefreshing
+    private val _uiState = MutableStateFlow(FeedUiState())
+    val uiState: StateFlow<FeedUiState> = _uiState
 
     init {
         launchOnMain {
             paginationMediator.getPhotosFlow()
-                .collect { newPage ->
-                    _photos.update { current -> current + newPage }
-                    _isRefreshing.value = false
+                .collect { state ->
+                    _uiState.update { current ->
+                        current.copy(
+                            photos = current.photos + state.photos,
+                            hasMore = state.hasMore,
+                            nextPage = state.nextPage,
+                            isRefreshing = false,
+                        )
+                    }
                 }
         }
         launchOnMain {
@@ -38,31 +43,42 @@ class FeedViewModel @Inject constructor(
                 refreshFavorites()
             }
         }
-        paginationMediator.requestMorePhotos()
+        paginationMediator.requestPage(FIRST_PAGE)
     }
 
     fun onRequestMoreItems() {
-        paginationMediator.requestMorePhotos()
+        if (!_uiState.value.hasMore) return
+        paginationMediator.requestPage(_uiState.value.nextPage)
     }
 
     fun onRefresh() {
-        _isRefreshing.value = true
-        _photos.value = emptyList()
+        _uiState.update {
+            it.copy(
+                photos = emptyList(),
+                hasMore = true,
+                nextPage = FIRST_PAGE,
+                isRefreshing = true,
+            )
+        }
         launchOnIO {
             paginationMediator.refresh()
         }
     }
 
     fun toggleFavorite(photo: Photo) {
-        val newIsFavorite = !photo.isFavorite
-        _photos.update { current ->
-            current.map { if (it.id == photo.id) it.copy(isFavorite = newIsFavorite) else it }
-        }
         launchOnIO {
+            val newIsFavorite = !photo.isFavorite
             if (newIsFavorite) {
                 repository.favoritePhoto(photo.id)
             } else {
                 repository.unfavoritePhoto(photo.id)
+            }
+            _uiState.update { current ->
+                current.copy(
+                    photos = current.photos.map {
+                        if (it.id == photo.id) it.copy(isFavorite = newIsFavorite) else it
+                    }
+                )
             }
         }
     }
@@ -70,9 +86,20 @@ class FeedViewModel @Inject constructor(
     private fun refreshFavorites() {
         launchOnIO {
             val favoriteIds = repository.getFavoritePhotos().map { it.id }.toSet()
-            _photos.update { current ->
-                current.map { it.copy(isFavorite = it.id in favoriteIds) }
+            _uiState.update { current ->
+                current.copy(
+                    photos = current.photos.map {
+                        it.copy(isFavorite = it.id in favoriteIds)
+                    }
+                )
             }
         }
     }
+
+    data class FeedUiState(
+        val photos: List<Photo> = emptyList(),
+        val isRefreshing: Boolean = false,
+        val hasMore: Boolean = true,
+        val nextPage: Int = FIRST_PAGE,
+    )
 }
