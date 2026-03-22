@@ -5,6 +5,7 @@ import com.z.photos.domain.entities.Photo
 import com.z.photos.domain.repositories.PhotoRepository
 import com.z.photos.ui.core.DispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -16,6 +17,7 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class PaginationMediatorTest {
 
     private val testDispatcher = UnconfinedTestDispatcher()

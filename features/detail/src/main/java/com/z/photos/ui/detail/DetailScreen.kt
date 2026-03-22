@@ -1,5 +1,6 @@
 package com.z.photos.ui.detail
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -7,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
@@ -24,6 +27,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
@@ -35,6 +39,7 @@ import com.z.photos.domain.entities.Photo
 import com.z.photos.ui.core.theme.HomeworkTheme
 
 private const val IMAGE_HEIGHT_DP = 320
+private const val FAVORITE_BUTTON_SIZE_DP = 36
 private const val CONTENT_PADDING_DP = 16
 private const val SECTION_SPACING_DP = 12
 
@@ -98,16 +103,21 @@ private fun DetailContent(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(IMAGE_HEIGHT_DP.dp),
-                    contentScale = ContentScale.Crop,
+                    contentScale = ContentScale.Fit,
                 )
                 IconButton(
                     onClick = onFavoriteClick,
-                    modifier = Modifier.align(Alignment.BottomEnd),
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(CONTENT_PADDING_DP.dp)
+                        .size(FAVORITE_BUTTON_SIZE_DP.dp)
+                        .clip(CircleShape)
+                        .background(Color.White),
                 ) {
                     Icon(
                         imageVector = if (photo.isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
                         contentDescription = stringResource(R.string.content_desc_favorite),
-                        tint = if (photo.isFavorite) Color.Red else Color.White,
+                        tint = if (photo.isFavorite) Color.Red else Color.Black,
                     )
                 }
             }

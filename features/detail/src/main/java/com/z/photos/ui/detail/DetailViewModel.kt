@@ -37,7 +37,7 @@ class DetailViewModel @Inject constructor(
         val current = _photoDetailsState.value ?: return
         val newFavorite = !current.isFavorite
         _photoDetailsState.value = current.copy(isFavorite = newFavorite)
-        viewModelScope.launch(dispatchers.main) {
+        viewModelScope.launch(dispatchers.io) {
             if (newFavorite) {
                 favoritesRepository.favoritePhoto(current.id)
             } else {

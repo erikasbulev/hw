@@ -24,7 +24,7 @@ class FavoritesViewModel @Inject constructor(
 
     init {
         loadFavorites()
-        viewModelScope.launch(dispatchers.main) {
+        viewModelScope.launch(dispatchers.io) {
             favoriteChangeNotifier.changes.collect {
                 loadFavorites()
             }

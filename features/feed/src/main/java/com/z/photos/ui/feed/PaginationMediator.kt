@@ -20,7 +20,7 @@ class PaginationMediator @Inject constructor(
     private val dispatchers: DispatcherProvider,
 ) {
 
-    private val pageRequests = MutableSharedFlow<Int>(extraBufferCapacity = 1)
+    private val pageRequests = MutableSharedFlow<Int>(replay = 1)
 
     fun getPhotosFlow(): Flow<PaginationState> {
         return pageRequests.distinctUntilChanged().flatMapConcat { requestedPage ->
