@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.z.photos.domain.entities.Photo
+import com.z.photos.domain.repositories.FavoritesRepository
 import com.z.photos.domain.repositories.PhotoRepository
 import com.z.photos.ui.core.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +18,8 @@ private const val PHOTO_ID_ARG = "photoId"
 @HiltViewModel
 class DetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val repository: PhotoRepository,
+    private val photoRepository: PhotoRepository,
+    private val favoritesRepository: FavoritesRepository,
     private val dispatchers: DispatcherProvider,
 ) : ViewModel() {
 
@@ -27,7 +29,7 @@ class DetailViewModel @Inject constructor(
     init {
         val photoId = checkNotNull(savedStateHandle.get<Long>(PHOTO_ID_ARG))
         viewModelScope.launch(dispatchers.io) {
-            _photoDetailsState.value = repository.getPhoto(photoId)
+            _photoDetailsState.value = photoRepository.getPhoto(photoId)
         }
     }
 
@@ -37,9 +39,9 @@ class DetailViewModel @Inject constructor(
         _photoDetailsState.value = current.copy(isFavorite = newFavorite)
         viewModelScope.launch(dispatchers.main) {
             if (newFavorite) {
-                repository.favoritePhoto(current.id)
+                favoritesRepository.favoritePhoto(current.id)
             } else {
-                repository.unfavoritePhoto(current.id)
+                favoritesRepository.unfavoritePhoto(current.id)
             }
         }
     }

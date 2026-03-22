@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.z.photos.data.repository.FavoriteChangeNotifier
 import com.z.photos.domain.entities.Photo
-import com.z.photos.domain.repositories.PhotoRepository
+import com.z.photos.domain.repositories.FavoritesRepository
 import com.z.photos.ui.core.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -22,7 +22,7 @@ private const val FIRST_PAGE = 1
 @HiltViewModel
 class FeedViewModel @Inject constructor(
     private val paginationMediator: PaginationMediator,
-    private val repository: PhotoRepository,
+    private val favoritesRepository: FavoritesRepository,
     private val favoriteChangeNotifier: FavoriteChangeNotifier,
     private val dispatchers: DispatcherProvider,
 ) : ViewModel() {
@@ -92,9 +92,9 @@ class FeedViewModel @Inject constructor(
         viewModelScope.launch(dispatchers.io) {
             val newIsFavorite = !photo.isFavorite
             if (newIsFavorite) {
-                repository.favoritePhoto(photo.id)
+                favoritesRepository.favoritePhoto(photo.id)
             } else {
-                repository.unfavoritePhoto(photo.id)
+                favoritesRepository.unfavoritePhoto(photo.id)
             }
             _uiState.update { current ->
                 current.copy(
@@ -108,7 +108,7 @@ class FeedViewModel @Inject constructor(
 
     private fun refreshFavorites() {
         viewModelScope.launch(dispatchers.io) {
-            val favoriteIds = repository.getFavoritePhotos().map { it.id }.toSet()
+            val favoriteIds = favoritesRepository.getFavoritePhotos().map { it.id }.toSet()
             _uiState.update { current ->
                 current.copy(
                     photos = current.photos.map {

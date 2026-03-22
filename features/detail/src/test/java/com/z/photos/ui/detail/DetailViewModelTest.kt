@@ -3,6 +3,7 @@ package com.z.photos.ui.detail
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import com.z.photos.domain.entities.Photo
+import com.z.photos.domain.repositories.FavoritesRepository
 import com.z.photos.domain.repositories.PhotoRepository
 import com.z.photos.ui.core.DispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher
@@ -25,7 +26,8 @@ import org.mockito.Mockito.`when`
 class DetailViewModelTest {
 
     private val testDispatcher = UnconfinedTestDispatcher()
-    private val repository = mock<PhotoRepository>()
+    private val photoRepository = mock<PhotoRepository>()
+    private val favoritesRepository = mock<FavoritesRepository>()
     private val dispatchers = object : DispatcherProvider {
         override val io: CoroutineDispatcher = testDispatcher
         override val main: CoroutineDispatcher = testDispatcher
@@ -51,19 +53,19 @@ class DetailViewModelTest {
 
     @Test
     fun `loads photo on init`() = runTest {
-        `when`(repository.getPhoto(1L)).thenReturn(testPhoto)
+        `when`(photoRepository.getPhoto(1L)).thenReturn(testPhoto)
         val savedStateHandle = SavedStateHandle(mapOf("photoId" to 1L))
 
-        val viewModel = DetailViewModel(savedStateHandle, repository, dispatchers)
+        val viewModel = DetailViewModel(savedStateHandle, photoRepository, favoritesRepository, dispatchers)
 
         assertEquals(testPhoto, viewModel.photoDetailsState.value)
     }
 
     @Test
     fun `toggleFavorite favorites an unfavorited photo`() = runTest {
-        `when`(repository.getPhoto(1L)).thenReturn(testPhoto)
+        `when`(photoRepository.getPhoto(1L)).thenReturn(testPhoto)
         val savedStateHandle = SavedStateHandle(mapOf("photoId" to 1L))
-        val viewModel = DetailViewModel(savedStateHandle, repository, dispatchers)
+        val viewModel = DetailViewModel(savedStateHandle, photoRepository, favoritesRepository, dispatchers)
 
         viewModel.photoDetailsState.test {
             assertEquals(testPhoto, awaitItem())
@@ -71,16 +73,16 @@ class DetailViewModelTest {
             viewModel.toggleFavorite()
 
             assertEquals(true, awaitItem()?.isFavorite)
-            verify(repository).favoritePhoto(1L)
+            verify(favoritesRepository).favoritePhoto(1L)
             cancelAndIgnoreRemainingEvents()
         }
     }
 
     @Test
     fun `toggleFavorite unfavorites a favorited photo`() = runTest {
-        `when`(repository.getPhoto(1L)).thenReturn(testPhoto.copy(isFavorite = true))
+        `when`(photoRepository.getPhoto(1L)).thenReturn(testPhoto.copy(isFavorite = true))
         val savedStateHandle = SavedStateHandle(mapOf("photoId" to 1L))
-        val viewModel = DetailViewModel(savedStateHandle, repository, dispatchers)
+        val viewModel = DetailViewModel(savedStateHandle, photoRepository, favoritesRepository, dispatchers)
 
         viewModel.photoDetailsState.test {
             assertEquals(true, awaitItem()?.isFavorite)
@@ -88,16 +90,16 @@ class DetailViewModelTest {
             viewModel.toggleFavorite()
 
             assertEquals(false, awaitItem()?.isFavorite)
-            verify(repository).unfavoritePhoto(1L)
+            verify(favoritesRepository).unfavoritePhoto(1L)
             cancelAndIgnoreRemainingEvents()
         }
     }
 
     @Test
     fun `toggleFavorite does nothing when photo is null`() = runTest {
-        `when`(repository.getPhoto(1L)).thenReturn(null)
+        `when`(photoRepository.getPhoto(1L)).thenReturn(null)
         val savedStateHandle = SavedStateHandle(mapOf("photoId" to 1L))
-        val viewModel = DetailViewModel(savedStateHandle, repository, dispatchers)
+        val viewModel = DetailViewModel(savedStateHandle, photoRepository, favoritesRepository, dispatchers)
 
         viewModel.toggleFavorite()
 
