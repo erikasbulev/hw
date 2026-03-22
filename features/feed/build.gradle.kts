@@ -26,7 +26,7 @@ android {
 dependencies {
     implementation(project(":domain"))
     implementation(project(":data:repository"))
-    implementation(project(":ui:core"))
+    implementation(project(":features:core"))
 
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)

@@ -16,11 +16,11 @@
             <option value="$PROJECT_DIR$/data/persistence" />
             <option value="$PROJECT_DIR$/data/repository" />
             <option value="$PROJECT_DIR$/domain" />
-            <option value="$PROJECT_DIR$/ui" />
-            <option value="$PROJECT_DIR$/ui/core" />
-            <option value="$PROJECT_DIR$/ui/detail" />
-            <option value="$PROJECT_DIR$/ui/favorites" />
-            <option value="$PROJECT_DIR$/ui/feed" />
+            <option value="$PROJECT_DIR$/features" />
+            <option value="$PROJECT_DIR$/features/core" />
+            <option value="$PROJECT_DIR$/features/detail" />
+            <option value="$PROJECT_DIR$/features/favorites" />
+            <option value="$PROJECT_DIR$/features/feed" />
           </set>
         </option>
       </GradleProjectSettings>

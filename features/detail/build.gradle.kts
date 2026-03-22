@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.z.photos.ui.favorites"
+    namespace = "com.z.photos.ui.detail"
     compileSdk = 36
 
     defaultConfig {
@@ -26,7 +26,7 @@ android {
 dependencies {
     implementation(project(":domain"))
     implementation(project(":data:repository"))
-    implementation(project(":ui:core"))
+    implementation(project(":features:core"))
 
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
@@ -35,6 +35,8 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
-    implementation(libs.material.icons.extended)
+    implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.material.icons.extended)
+    debugImplementation(libs.androidx.compose.ui.tooling)
 }
