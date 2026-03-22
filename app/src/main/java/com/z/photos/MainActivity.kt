@@ -1,5 +1,6 @@
 package com.z.photos
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -81,11 +82,20 @@ class MainActivity : ComponentActivity() {
                                 onBack = {
                                     navController.popBackStack()
                                 },
+                                onShare = { url -> sharePhoto(url) },
                             )
                         }
                     }
                 }
             }
         }
+    }
+
+    private fun sharePhoto(url: String) {
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, url)
+        }
+        startActivity(Intent.createChooser(shareIntent, getString(R.string.share_chooser_title)))
     }
 }

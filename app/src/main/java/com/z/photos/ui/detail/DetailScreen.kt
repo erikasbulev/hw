@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -41,6 +42,7 @@ private const val SECTION_SPACING_DP = 12
 @Composable
 fun DetailScreen(
     onBack: () -> Unit,
+    onShare: (url: String) -> Unit,
     viewModel: DetailViewModel = hiltViewModel(),
 ) {
     val photo by viewModel.photoDetailsState.collectAsState()
@@ -49,6 +51,7 @@ fun DetailScreen(
             photo = it,
             onBack = onBack,
             onFavoriteClick = { viewModel.toggleFavorite() },
+            onShareClick = { onShare(it.photoUrl) },
         )
     }
 }
@@ -59,6 +62,7 @@ private fun DetailContent(
     photo: Photo,
     onBack: () -> Unit,
     onFavoriteClick: () -> Unit,
+    onShareClick: () -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -71,7 +75,15 @@ private fun DetailContent(
                             contentDescription = stringResource(R.string.content_desc_back),
                         )
                     }
-                }
+                },
+                actions = {
+                    IconButton(onClick = onShareClick) {
+                        Icon(
+                            imageVector = Icons.Filled.Share,
+                            contentDescription = stringResource(R.string.content_desc_share),
+                        )
+                    }
+                },
             )
         }
     ) { innerPadding ->
@@ -138,6 +150,7 @@ private fun DetailScreenPreview() {
             ),
             onBack = {},
             onFavoriteClick = {},
+            onShareClick = {},
         )
     }
 }
