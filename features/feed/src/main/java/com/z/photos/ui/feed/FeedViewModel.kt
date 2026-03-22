@@ -22,11 +22,15 @@ class FeedViewModel @Inject constructor(
     private val _photos = MutableStateFlow<List<Photo>>(emptyList())
     val photos: StateFlow<List<Photo>> = _photos
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing
+
     init {
         launchOnMain {
             paginationMediator.getPhotosFlow()
                 .collect { newPage ->
                     _photos.update { current -> current + newPage }
+                    _isRefreshing.value = false
                 }
         }
         launchOnMain {
@@ -39,6 +43,14 @@ class FeedViewModel @Inject constructor(
 
     fun onRequestMoreItems() {
         paginationMediator.requestMorePhotos()
+    }
+
+    fun onRefresh() {
+        _isRefreshing.value = true
+        _photos.value = emptyList()
+        launchOnIO {
+            paginationMediator.refresh()
+        }
     }
 
     fun toggleFavorite(photo: Photo) {

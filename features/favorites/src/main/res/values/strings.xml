@@ -1,4 +1,5 @@
 <resources>
     <!-- Favorites screen -->
+    <string name="favorites_toolbar_title">Favorites</string>
     <string name="empty_favorites">No favorites yet</string>
 </resources>

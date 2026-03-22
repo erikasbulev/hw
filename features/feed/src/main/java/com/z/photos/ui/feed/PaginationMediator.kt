@@ -52,4 +52,9 @@ class PaginationMediator @Inject constructor(
         pageRequests.tryEmit(page.load())
     }
 
+    suspend fun refresh() {
+        photoRepository.clearPhotos()
+        page.store(FIRST_PAGE)
+        pageRequests.emit(FIRST_PAGE)
+    }
 }

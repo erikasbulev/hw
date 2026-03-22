@@ -20,6 +20,8 @@ interface LocalDataSource {
 
     suspend fun getCacheTimestamp(page: Int): Long?
 
+    suspend fun clearPhotos()
+
     suspend fun isFavorite(id: Long): Boolean
 
     suspend fun getFavoriteIds(): List<Long>

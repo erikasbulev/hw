@@ -21,4 +21,6 @@ interface PhotoRepository {
     suspend fun getFavoriteCount(): Int
 
     suspend fun isCacheStale(page: Int): Boolean
+
+    suspend fun clearPhotos()
 }

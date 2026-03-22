@@ -13,10 +13,14 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -36,6 +40,7 @@ private const val THUMBNAIL_HEIGHT_DP = 150
 private const val ARTIST_TEXT_PADDING_DP = 8
 private const val ARTIST_MAX_LINES = 1
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesScreen(
     viewModel: FavoritesViewModel = hiltViewModel(),
@@ -43,26 +48,40 @@ fun FavoritesScreen(
 ) {
     val favorites by viewModel.favorites.collectAsState()
 
-    if (favorites.isEmpty()) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(
-                text = stringResource(R.string.empty_favorites),
-                style = MaterialTheme.typography.bodyLarge,
-            )
-        }
-    } else {
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(GRID_COLUMNS)
-        ) {
-            items(favorites) { photo ->
-                FavoritePhotoItem(
-                    photo = photo,
-                    onClick = { onPhotoClick(photo) },
-                    onUnfavoriteClick = { viewModel.unfavorite(photo) },
+    Scaffold(
+        topBar = {
+            Column {
+                TopAppBar(
+                    title = { Text(stringResource(R.string.favorites_toolbar_title)) },
                 )
+                HorizontalDivider()
+            }
+        }
+    ) { innerPadding ->
+        if (favorites.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = stringResource(R.string.empty_favorites),
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            }
+        } else {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(GRID_COLUMNS),
+                modifier = Modifier.padding(innerPadding),
+            ) {
+                items(favorites) { photo ->
+                    FavoritePhotoItem(
+                        photo = photo,
+                        onClick = { onPhotoClick(photo) },
+                        onUnfavoriteClick = { viewModel.unfavorite(photo) },
+                    )
+                }
             }
         }
     }

@@ -55,6 +55,10 @@ class RoomDataSource @Inject constructor(
         )
     }
 
+    override suspend fun clearPhotos() {
+        localPhotoDao.clearPhotos()
+    }
+
     override suspend fun isFavorite(id: Long): Boolean {
         return favoritePhotoDao.isFavorite(id)
     }

@@ -64,6 +64,10 @@ class PhotoRepositoryImpl @Inject constructor(
         return timeProvider.currentTimeMillis() - cachedAt > CACHE_TTL_MS
     }
 
+    override suspend fun clearPhotos() {
+        localDataSource.clearPhotos()
+    }
+
     companion object {
         private const val CACHE_TTL_MS = 5 * 60 * 1000L
     }
