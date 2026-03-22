@@ -1,11 +1,11 @@
 package com.z.photos.ui.feed
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.z.photos.data.repository.FavoriteChangeNotifier
 import com.z.photos.domain.entities.Photo
 import com.z.photos.domain.repositories.PhotoRepository
-import com.z.photos.ui.core.launchOnIO
-import com.z.photos.ui.core.launchOnMain
+import com.z.photos.ui.core.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
 
@@ -23,6 +24,7 @@ class FeedViewModel @Inject constructor(
     private val paginationMediator: PaginationMediator,
     private val repository: PhotoRepository,
     private val favoriteChangeNotifier: FavoriteChangeNotifier,
+    private val dispatchers: DispatcherProvider,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(FeedUiState())
@@ -32,7 +34,7 @@ class FeedViewModel @Inject constructor(
     val errorEvents = _errorEvents.receiveAsFlow()
 
     init {
-        launchOnMain {
+        viewModelScope.launch(dispatchers.main) {
             paginationMediator.getPhotosFlow()
                 .retryWhen { cause, _ ->
                     if (cause is IOException) {
@@ -57,7 +59,7 @@ class FeedViewModel @Inject constructor(
                     }
                 }
         }
-        launchOnMain {
+        viewModelScope.launch(dispatchers.main) {
             favoriteChangeNotifier.changes.collect {
                 refreshFavorites()
             }
@@ -81,13 +83,13 @@ class FeedViewModel @Inject constructor(
                 isRefreshing = true,
             )
         }
-        launchOnIO {
+        viewModelScope.launch(dispatchers.io) {
             paginationMediator.refresh()
         }
     }
 
     fun toggleFavorite(photo: Photo) {
-        launchOnIO {
+        viewModelScope.launch(dispatchers.io) {
             val newIsFavorite = !photo.isFavorite
             if (newIsFavorite) {
                 repository.favoritePhoto(photo.id)
@@ -105,7 +107,7 @@ class FeedViewModel @Inject constructor(
     }
 
     private fun refreshFavorites() {
-        launchOnIO {
+        viewModelScope.launch(dispatchers.io) {
             val favoriteIds = repository.getFavoritePhotos().map { it.id }.toSet()
             _uiState.update { current ->
                 current.copy(

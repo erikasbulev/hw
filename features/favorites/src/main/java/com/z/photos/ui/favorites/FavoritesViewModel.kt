@@ -1,20 +1,22 @@
 package com.z.photos.ui.favorites
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.z.photos.data.repository.FavoriteChangeNotifier
 import com.z.photos.domain.entities.Photo
 import com.z.photos.domain.repositories.PhotoRepository
-import com.z.photos.ui.core.launchOnIO
-import com.z.photos.ui.core.launchOnMain
+import com.z.photos.ui.core.DispatcherProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class FavoritesViewModel @Inject constructor(
     private val repository: PhotoRepository,
     private val favoriteChangeNotifier: FavoriteChangeNotifier,
+    private val dispatchers: DispatcherProvider,
 ) : ViewModel() {
 
     private val _favorites = MutableStateFlow<List<Photo>>(emptyList())
@@ -22,22 +24,22 @@ class FavoritesViewModel @Inject constructor(
 
     init {
         loadFavorites()
-        launchOnMain {
+        viewModelScope.launch(dispatchers.main) {
             favoriteChangeNotifier.changes.collect {
                 loadFavorites()
             }
         }
     }
 
-    fun unfavorite(photo: Photo) {
-        launchOnIO {
-            repository.unfavoritePhoto(photo.id)
+    private fun loadFavorites() {
+        viewModelScope.launch(dispatchers.io) {
+            _favorites.value = repository.getFavoritePhotos()
         }
     }
 
-    private fun loadFavorites() {
-        launchOnIO {
-            _favorites.value = repository.getFavoritePhotos()
+    fun unfavorite(photo: Photo) {
+        viewModelScope.launch(dispatchers.io) {
+            repository.unfavoritePhoto(photo.id)
         }
     }
 }

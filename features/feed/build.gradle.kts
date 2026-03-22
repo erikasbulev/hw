@@ -37,4 +37,8 @@ dependencies {
     implementation(libs.androidx.compose.ui)
     implementation(libs.material.icons.extended)
     implementation(libs.androidx.compose.material3)
+    testImplementation(libs.junit)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.turbine)
 }

@@ -2,7 +2,7 @@ package com.z.photos.ui.feed
 
 import com.z.photos.domain.entities.Photo
 import com.z.photos.domain.repositories.PhotoRepository
-import kotlinx.coroutines.Dispatchers
+import com.z.photos.ui.core.DispatcherProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -17,6 +17,7 @@ private const val FIRST_PAGE = 1
 @OptIn(ExperimentalCoroutinesApi::class)
 class PaginationMediator @Inject constructor(
     private val photoRepository: PhotoRepository,
+    private val dispatchers: DispatcherProvider,
 ) {
 
     private val pageRequests = MutableSharedFlow<Int>(extraBufferCapacity = 1)
@@ -37,7 +38,7 @@ class PaginationMediator @Inject constructor(
                         emit(PaginationState(photos = saved, hasMore = true, nextPage = requestedPage + 1))
                     }
                 }
-            }.flowOn(Dispatchers.IO)
+            }.flowOn(dispatchers.io)
         }
     }
 
