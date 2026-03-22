@@ -6,5 +6,6 @@ data class LocalPhotoWithFavorite(
     val photoThumbnailUrl: String,
     val artist: String,
     val page: Int,
+    val cachedAt: Long,
     val isFavorite: Boolean,
 )

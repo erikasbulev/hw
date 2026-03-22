@@ -7,11 +7,13 @@ import com.z.photos.data.persistence.room.entities.LocalPhoto
 import com.z.photos.data.persistence.room.entities.LocalPhotoWithFavorite
 import com.z.photos.data.persistence.datasource.LocalDataSource
 import com.z.photos.domain.entities.Photo
+import com.z.photos.domain.time.TimeProvider
 import javax.inject.Inject
 
 class RoomDataSource @Inject constructor(
     private val localPhotoDao: LocalPhotoDao,
     private val favoritePhotoDao: FavoritePhotoDao,
+    private val timeProvider: TimeProvider,
 ) : LocalDataSource {
 
     override suspend fun getPhotos(page: Int): List<Photo> {
@@ -23,7 +25,8 @@ class RoomDataSource @Inject constructor(
     }
 
     override suspend fun persistPhotos(page: Int, remotePhotos: List<Photo>) {
-        localPhotoDao.insertPhotos(remotePhotos.map { it.toLocalPhoto(page) })
+        val now = timeProvider.currentTimeMillis()
+        localPhotoDao.insertPhotos(remotePhotos.map { it.toLocalPhoto(page, now) })
     }
 
     override suspend fun favorite(id: Long) {
@@ -52,13 +55,18 @@ class RoomDataSource @Inject constructor(
         )
     }
 
-    private fun Photo.toLocalPhoto(page: Int): LocalPhoto {
+    override suspend fun getCacheTimestamp(page: Int): Long? {
+        return localPhotoDao.getPhotos(page).firstOrNull()?.cachedAt
+    }
+
+    private fun Photo.toLocalPhoto(page: Int, cachedAt: Long): LocalPhoto {
         return LocalPhoto(
             id = id,
             photoUrl = photoUrl,
             photoThumbnailUrl = photoThumbnailUrl,
             artist = artist,
             page = page,
+            cachedAt = cachedAt,
         )
     }
 }

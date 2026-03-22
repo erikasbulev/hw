@@ -10,4 +10,5 @@ data class LocalPhoto(
     val photoThumbnailUrl: String,
     val artist: String,
     val page: Int,
+    val cachedAt: Long,
 )

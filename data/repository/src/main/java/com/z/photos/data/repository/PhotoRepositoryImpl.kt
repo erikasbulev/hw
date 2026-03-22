@@ -4,12 +4,14 @@ import com.z.photos.data.network.datasource.RemoteDataSource
 import com.z.photos.data.persistence.datasource.LocalDataSource
 import com.z.photos.domain.entities.Photo
 import com.z.photos.domain.repositories.PhotoRepository
+import com.z.photos.domain.time.TimeProvider
 import javax.inject.Inject
 
 class PhotoRepositoryImpl @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
     private val localDataSource: LocalDataSource,
     private val favoriteChangeNotifier: FavoriteChangeNotifier,
+    private val timeProvider: TimeProvider,
 ) : PhotoRepository {
 
     override suspend fun getRemotePhotos(page: Int): List<Photo> {
@@ -44,5 +46,14 @@ class PhotoRepositoryImpl @Inject constructor(
 
     override suspend fun getFavoriteCount(): Int {
         return localDataSource.getFavoriteCount()
+    }
+
+    override suspend fun isCacheStale(page: Int): Boolean {
+        val cachedAt = localDataSource.getCacheTimestamp(page) ?: return true
+        return timeProvider.currentTimeMillis() - cachedAt > CACHE_TTL_MS
+    }
+
+    companion object {
+        private const val CACHE_TTL_MS = 5 * 60 * 1000L
     }
 }

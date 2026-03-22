@@ -8,14 +8,16 @@ import com.z.photos.data.persistence.room.entities.LocalPhoto
 import com.z.photos.data.persistence.room.entities.LocalPhotoWithFavorite
 
 private const val SELECT_WITH_FAVORITE = """
-    SELECT localphoto.id, localphoto.photoUrl, localphoto.photoThumbnailUrl, localphoto.artist, localphoto.page,
+    SELECT localphoto.id, localphoto.photoUrl, localphoto.photoThumbnailUrl, localphoto.artist,
+           localphoto.page, localphoto.cachedAt,
            CASE WHEN favoritephoto.id IS NOT NULL THEN 1 ELSE 0 END AS isFavorite
     FROM localphoto
     LEFT JOIN favoritephoto ON localphoto.id = favoritephoto.id
 """
 
 private const val SELECT_FAVORITES_ONLY = """
-    SELECT localphoto.id, localphoto.photoUrl, localphoto.photoThumbnailUrl, localphoto.artist, localphoto.page,
+    SELECT localphoto.id, localphoto.photoUrl, localphoto.photoThumbnailUrl, localphoto.artist,
+           localphoto.page, localphoto.cachedAt,
            1 AS isFavorite
     FROM localphoto
     INNER JOIN favoritephoto ON localphoto.id = favoritephoto.id
@@ -35,4 +37,7 @@ interface LocalPhotoDao {
 
     @Insert(onConflict = REPLACE)
     fun insertPhotos(photos: List<LocalPhoto>)
+
+    @Query("DELETE FROM localphoto")
+    fun clearPhotos()
 }

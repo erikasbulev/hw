@@ -6,6 +6,8 @@ import com.z.photos.data.repository.PhotoRepositoryImpl
 import com.z.photos.data.network.datasource.RemoteDataSource
 import com.z.photos.data.persistence.datasource.LocalDataSource
 import com.z.photos.domain.repositories.PhotoRepository
+import com.z.photos.domain.time.TimeProvider
+import com.z.photos.time.SystemTimeProvider
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -23,4 +25,7 @@ abstract class TestModuleForNow {
 
     @Binds
     abstract fun bindLocalDataSource(impl: RoomDataSource): LocalDataSource
+
+    @Binds
+    abstract fun bindTimeProvider(impl: SystemTimeProvider): TimeProvider
 }

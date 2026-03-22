@@ -29,12 +29,11 @@ class PaginationMediator @Inject constructor(
         extraBufferCapacity = PAGE_BUFFER_CAPACITY
     )
 
-
     fun getPhotosFlow(): Flow<List<Photo>> {
         return pageRequests.flatMapConcat { page ->
             flow {
                 val local = photoRepository.getLocalPhotos(page)
-                if (local.isNotEmpty()) {
+                if (local.isNotEmpty() && !photoRepository.isCacheStale(page)) {
                     emit(local)
                 } else {
                     val remote = photoRepository.getRemotePhotos(page)
@@ -53,7 +52,4 @@ class PaginationMediator @Inject constructor(
         pageRequests.tryEmit(page.load())
     }
 
-    fun resetPagination() {
-        page.store(FIRST_PAGE)
-    }
 }
