@@ -8,7 +8,7 @@ interface PhotoRepository {
 
     suspend fun getLocalPhotos(page: Int): List<Photo>
 
-    suspend fun getLocalPhoto(id: Long): Photo?
+    suspend fun getPhoto(id: Long): Photo
 
     suspend fun savePhotos(page: Int, photos: List<Photo>)
 

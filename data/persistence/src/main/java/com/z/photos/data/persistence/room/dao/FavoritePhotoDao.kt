@@ -18,4 +18,10 @@ interface FavoritePhotoDao {
 
     @Query("SELECT COUNT(*) FROM favoritephoto")
     fun getFavoriteCount(): Int
+
+    @Query("SELECT COUNT(*) FROM favoritephoto WHERE id = :id")
+    fun isFavorite(id: Long): Boolean
+
+    @Query("SELECT id FROM favoritephoto")
+    fun getFavoriteIds(): List<Long>
 }

@@ -22,8 +22,13 @@ class PhotoRepositoryImpl @Inject constructor(
         return localDataSource.getPhotos(page)
     }
 
-    override suspend fun getLocalPhoto(id: Long): Photo? {
-        return localDataSource.getPhoto(id)
+    override suspend fun getPhoto(id: Long): Photo {
+        val localPhoto = localDataSource.getPhoto(id)
+        if (localPhoto != null) return localPhoto
+
+        val remotePhoto = remoteDataSource.getPhoto(id)
+        val isFavorite = localDataSource.isFavorite(id)
+        return remotePhoto.copy(isFavorite = isFavorite)
     }
 
     override suspend fun savePhotos(page: Int, photos: List<Photo>) {
@@ -41,7 +46,13 @@ class PhotoRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getFavoritePhotos(): List<Photo> {
-        return localDataSource.getFavoritePhotos()
+        val localFavorites = localDataSource.getFavoritePhotos()
+        if (localFavorites.isNotEmpty()) return localFavorites
+
+        val favoriteIds = localDataSource.getFavoriteIds()
+        return favoriteIds.map { id ->
+            remoteDataSource.getPhoto(id).copy(isFavorite = true)
+        }
     }
 
     override suspend fun getFavoriteCount(): Int {

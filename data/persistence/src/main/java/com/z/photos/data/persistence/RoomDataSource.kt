@@ -55,6 +55,14 @@ class RoomDataSource @Inject constructor(
         )
     }
 
+    override suspend fun isFavorite(id: Long): Boolean {
+        return favoritePhotoDao.isFavorite(id)
+    }
+
+    override suspend fun getFavoriteIds(): List<Long> {
+        return favoritePhotoDao.getFavoriteIds()
+    }
+
     override suspend fun getCacheTimestamp(page: Int): Long? {
         return localPhotoDao.getPhotos(page).firstOrNull()?.cachedAt
     }

@@ -24,7 +24,7 @@ class DetailViewModel @Inject constructor(
     init {
         val photoId = checkNotNull(savedStateHandle.get<Long>(PHOTO_ID_ARG))
         launchOnIO {
-            _photoDetailsState.value = repository.getLocalPhoto(photoId)
+            _photoDetailsState.value = repository.getPhoto(photoId)
         }
     }
 
