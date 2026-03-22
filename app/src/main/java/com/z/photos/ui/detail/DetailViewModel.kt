@@ -2,15 +2,13 @@ package com.z.photos.ui.detail
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.z.photos.business.entities.Photo
 import com.z.photos.business.repositories.PhotoRepository
 import com.z.photos.navigation.PHOTO_ID_ARG
+import com.z.photos.ui.launchOnIO
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,7 +22,7 @@ class DetailViewModel @Inject constructor(
 
     init {
         val photoId = checkNotNull(savedStateHandle.get<Long>(PHOTO_ID_ARG))
-        viewModelScope.launch(Dispatchers.IO) {
+        launchOnIO {
             _photoDetailsState.value = repository.getLocalPhoto(photoId)
         }
     }
@@ -33,7 +31,7 @@ class DetailViewModel @Inject constructor(
         val current = _photoDetailsState.value ?: return
         val newFavorite = !current.isFavorite
         _photoDetailsState.value = current.copy(isFavorite = newFavorite)
-        viewModelScope.launch(Dispatchers.IO) {
+        launchOnIO {
             if (newFavorite) {
                 repository.favoritePhoto(current.id)
             } else {

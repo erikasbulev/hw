@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.REPLACE
+import androidx.room.Query
 import com.z.photos.persistence.room.entities.FavoritePhoto
 
 @Dao
@@ -14,4 +15,7 @@ interface FavoritePhotoDao {
 
     @Delete
     fun deleteFavorite(photo: FavoritePhoto)
+
+    @Query("SELECT COUNT(*) FROM favoritephoto")
+    fun getFavoriteCount(): Int
 }

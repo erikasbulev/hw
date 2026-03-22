@@ -14,6 +14,13 @@ private const val SELECT_WITH_FAVORITE = """
     LEFT JOIN favoritephoto ON localphoto.id = favoritephoto.id
 """
 
+private const val SELECT_FAVORITES_ONLY = """
+    SELECT localphoto.id, localphoto.photoUrl, localphoto.photoThumbnailUrl, localphoto.artist, localphoto.page,
+           1 AS isFavorite
+    FROM localphoto
+    INNER JOIN favoritephoto ON localphoto.id = favoritephoto.id
+"""
+
 @Dao
 interface LocalPhotoDao {
 
@@ -22,6 +29,9 @@ interface LocalPhotoDao {
 
     @Query("$SELECT_WITH_FAVORITE WHERE localphoto.id = :id LIMIT 1")
     fun getPhotoById(id: Long): LocalPhotoWithFavorite?
+
+    @Query(SELECT_FAVORITES_ONLY)
+    fun getFavoritePhotos(): List<LocalPhotoWithFavorite>
 
     @Insert(onConflict = REPLACE)
     fun insertPhotos(photos: List<LocalPhoto>)

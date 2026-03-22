@@ -13,4 +13,8 @@ interface LocalDataSource {
     suspend fun favorite(id: Long)
 
     suspend fun unfavorite(id: Long)
+
+    suspend fun getFavoritePhotos(): List<Photo>
+
+    suspend fun getFavoriteCount(): Int
 }

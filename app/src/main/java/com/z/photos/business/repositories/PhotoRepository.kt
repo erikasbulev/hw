@@ -15,4 +15,8 @@ interface PhotoRepository {
     suspend fun favoritePhoto(photoId: Long)
 
     suspend fun unfavoritePhoto(photoId: Long)
+
+    suspend fun getFavoritePhotos(): List<Photo>
+
+    suspend fun getFavoriteCount(): Int
 }

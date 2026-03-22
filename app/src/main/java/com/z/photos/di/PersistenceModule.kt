@@ -8,15 +8,17 @@ import com.z.photos.persistence.room.dao.LocalPhotoDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 private const val DATABASE_NAME = "photos-database"
 
 @Module
-@InstallIn(ViewModelComponent::class)
+@InstallIn(SingletonComponent::class)
 class PersistenceModule {
 
+    @Singleton
     @Provides
     fun provideDatabase(
         @ApplicationContext applicationContext: Context,

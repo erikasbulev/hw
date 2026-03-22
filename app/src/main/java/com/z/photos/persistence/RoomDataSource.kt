@@ -34,6 +34,14 @@ class RoomDataSource @Inject constructor(
         favoritePhotoDao.deleteFavorite(FavoritePhoto(id))
     }
 
+    override suspend fun getFavoritePhotos(): List<Photo> {
+        return localPhotoDao.getFavoritePhotos().map { it.toPhoto() }
+    }
+
+    override suspend fun getFavoriteCount(): Int {
+        return favoritePhotoDao.getFavoriteCount()
+    }
+
     private fun LocalPhotoWithFavorite.toPhoto(): Photo {
         return Photo(
             id = id,

@@ -25,20 +25,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
+import com.z.photos.R
 import com.z.photos.business.entities.Photo
 import com.z.photos.ui.theme.HomeworkTheme
 
 private const val IMAGE_HEIGHT_DP = 320
 private const val CONTENT_PADDING_DP = 16
 private const val SECTION_SPACING_DP = 12
-private const val LABEL_ARTIST = "Artist"
-private const val LABEL_ID = "ID"
-private const val CONTENT_DESC_BACK = "Back"
-private const val CONTENT_DESC_FAVORITE = "Favorite"
 
 @Composable
 fun DetailScreen(
@@ -70,7 +68,7 @@ private fun DetailContent(
                     IconButton(onClick = onBack) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = CONTENT_DESC_BACK,
+                            contentDescription = stringResource(R.string.content_desc_back),
                         )
                     }
                 }
@@ -97,7 +95,7 @@ private fun DetailContent(
                 ) {
                     Icon(
                         imageVector = if (photo.isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                        contentDescription = CONTENT_DESC_FAVORITE,
+                        contentDescription = stringResource(R.string.content_desc_favorite),
                         tint = if (photo.isFavorite) Color.Red else Color.White,
                     )
                 }
@@ -105,7 +103,7 @@ private fun DetailContent(
             Spacer(modifier = Modifier.height(CONTENT_PADDING_DP.dp))
             Column(modifier = Modifier.padding(horizontal = CONTENT_PADDING_DP.dp)) {
                 Text(
-                    text = LABEL_ARTIST,
+                    text = stringResource(R.string.label_artist),
                     style = MaterialTheme.typography.labelSmall,
                 )
                 Text(
@@ -114,7 +112,7 @@ private fun DetailContent(
                 )
                 Spacer(modifier = Modifier.height(SECTION_SPACING_DP.dp))
                 Text(
-                    text = LABEL_ID,
+                    text = stringResource(R.string.label_id),
                     style = MaterialTheme.typography.labelSmall,
                 )
                 Text(

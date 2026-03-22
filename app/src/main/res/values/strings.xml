@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">Homework</string>
+
+    <!-- Bottom navigation -->
+    <string name="label_feed">Feed</string>
+    <string name="label_favorites">Favorites</string>
+
+    <!-- Favorites screen -->
+    <string name="empty_favorites">No favorites yet</string>
+
+    <!-- Detail screen -->
+    <string name="label_artist">Artist</string>
+    <string name="label_id">ID</string>
+    <string name="content_desc_back">Back</string>
+    <string name="content_desc_favorite">Favorite</string>
 </resources>
