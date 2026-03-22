@@ -2,6 +2,7 @@ package com.z.photos.data.network.di
 
 import com.z.photos.data.network.api.PixelsApi
 import com.z.photos.data.network.interceptors.PexelsAuthInterceptor
+import com.z.photos.data.network.interceptors.RetryInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,6 +29,7 @@ class NetworkModule {
     fun provideOkHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(PexelsAuthInterceptor())
+            .addInterceptor(RetryInterceptor())
             .build()
     }
 }

@@ -7,7 +7,7 @@ class PexelsAuthInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
             .newBuilder()
-            .addHeader("Authorization", "apiKey")
+            .addHeader("Authorization", "7aTs5JVIG3QhBE811MLDkWGOuxdCY7Af3IQp9Fu537DormA5Y6XWei3c")
             .build()
         return chain.proceed(request)
     }

@@ -7,9 +7,13 @@ import com.z.photos.domain.repositories.PhotoRepository
 import com.z.photos.ui.core.launchOnIO
 import com.z.photos.ui.core.launchOnMain
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.flow.update
+import java.io.IOException
 import javax.inject.Inject
 
 private const val FIRST_PAGE = 1
@@ -24,16 +28,31 @@ class FeedViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(FeedUiState())
     val uiState: StateFlow<FeedUiState> = _uiState
 
+    private val _errorEvents = Channel<Unit>(Channel.BUFFERED)
+    val errorEvents = _errorEvents.receiveAsFlow()
+
     init {
         launchOnMain {
             paginationMediator.getPhotosFlow()
+                .retryWhen { cause, _ ->
+                    if (cause is IOException) {
+                        _uiState.update { it.copy(isRefreshing = false) }
+                        _errorEvents.send(Unit)
+                        true
+                    } else {
+                        false
+                    }
+                }
                 .collect { state ->
                     _uiState.update { current ->
+                        val existingIds = current.photos.map { it.id }.toSet()
+                        val newPhotos = state.photos.filter { it.id !in existingIds }
                         current.copy(
-                            photos = current.photos + state.photos,
+                            photos = current.photos + newPhotos,
                             hasMore = state.hasMore,
                             nextPage = state.nextPage,
                             isRefreshing = false,
+                            isLoadingMore = false,
                         )
                     }
                 }
@@ -47,8 +66,10 @@ class FeedViewModel @Inject constructor(
     }
 
     fun onRequestMoreItems() {
-        if (!_uiState.value.hasMore) return
-        paginationMediator.requestPage(_uiState.value.nextPage)
+        val state = _uiState.value
+        if (!state.hasMore || state.isLoadingMore) return
+        _uiState.update { it.copy(isLoadingMore = true) }
+        paginationMediator.requestPage(state.nextPage)
     }
 
     fun onRefresh() {
@@ -99,6 +120,7 @@ class FeedViewModel @Inject constructor(
     data class FeedUiState(
         val photos: List<Photo> = emptyList(),
         val isRefreshing: Boolean = false,
+        val isLoadingMore: Boolean = false,
         val hasMore: Boolean = true,
         val nextPage: Int = FIRST_PAGE,
     )

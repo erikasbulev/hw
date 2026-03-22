@@ -1,4 +1,5 @@
 <resources>
     <!-- Feed screen -->
     <string name="feed_toolbar_title">Pexels</string>
+    <string name="feed_error_network">Something went wrong. Please try again later.</string>
 </resources>

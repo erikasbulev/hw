@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -21,7 +22,7 @@ class PaginationMediator @Inject constructor(
     private val pageRequests = MutableSharedFlow<Int>(extraBufferCapacity = 1)
 
     fun getPhotosFlow(): Flow<PaginationState> {
-        return pageRequests.flatMapConcat { requestedPage ->
+        return pageRequests.distinctUntilChanged().flatMapConcat { requestedPage ->
             flow {
                 val local = photoRepository.getLocalPhotos(requestedPage)
                 if (local.isNotEmpty() && !photoRepository.isCacheStale(requestedPage)) {

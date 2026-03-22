@@ -5,8 +5,8 @@ import com.z.photos.data.persistence.RoomDataSource
 import com.z.photos.data.repository.PhotoRepositoryImpl
 import com.z.photos.data.network.datasource.RemoteDataSource
 import com.z.photos.data.persistence.datasource.LocalDataSource
+import com.z.photos.data.persistence.time.TimeProvider
 import com.z.photos.domain.repositories.PhotoRepository
-import com.z.photos.domain.time.TimeProvider
 import com.z.photos.time.SystemTimeProvider
 import dagger.Binds
 import dagger.Module
