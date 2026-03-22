@@ -1,22 +1,18 @@
 package com.z.photos.di
 
-import android.app.Application
-import com.z.photos.business.datasources.LocalDataSource
-import com.z.photos.business.datasources.RemoteDataSource
-import com.z.photos.business.repositories.PhotoRepository
-import com.z.photos.nework.RemoteApiDataSource
-import com.z.photos.repository.PhotoRepositoryImpl
-import com.z.photos.persistence.RoomDataSource
+import com.z.photos.data.network.RemoteApiDataSource
+import com.z.photos.data.persistence.RoomDataSource
+import com.z.photos.data.repository.PhotoRepositoryImpl
+import com.z.photos.data.network.datasource.RemoteDataSource
+import com.z.photos.data.persistence.datasource.LocalDataSource
+import com.z.photos.domain.repositories.PhotoRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.android.scopes.ActivityRetainedScoped
 import dagger.hilt.components.SingletonComponent
 
 @Module
-@InstallIn(ViewModelComponent::class)
+@InstallIn(SingletonComponent::class)
 abstract class TestModuleForNow {
 
     @Binds

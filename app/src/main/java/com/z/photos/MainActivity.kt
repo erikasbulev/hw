@@ -22,10 +22,9 @@ import com.z.photos.navigation.Routes
 import com.z.photos.ui.detail.DetailScreen
 import com.z.photos.ui.favorites.FavoritesScreen
 import com.z.photos.ui.feed.FeedScreen
-import com.z.photos.ui.main.BOTTOM_NAV_ROUTES
-import com.z.photos.ui.main.BottomBar
-import com.z.photos.ui.main.MainViewModel
-import com.z.photos.ui.theme.HomeworkTheme
+import com.z.photos.ui.core.main.BottomBar
+import com.z.photos.ui.core.main.MainViewModel
+import com.z.photos.ui.core.theme.HomeworkTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -42,7 +41,7 @@ class MainActivity : ComponentActivity() {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route
 
-                val showBottomBar = currentRoute in BOTTOM_NAV_ROUTES
+                val showBottomBar = currentRoute in setOf(Routes.FEED, Routes.FAVORITES)
 
                 Scaffold(
                     bottomBar = {
@@ -51,6 +50,8 @@ class MainActivity : ComponentActivity() {
                                 currentRoute = currentRoute,
                                 favoriteCount = favoriteCount,
                                 navController = navController,
+                                feedRoute = Routes.FEED,
+                                favoritesRoute = Routes.FAVORITES,
                             )
                         }
                     }

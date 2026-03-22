@@ -1,0 +1,8 @@
+<resources>
+    <!-- Detail screen -->
+    <string name="label_artist">Artist</string>
+    <string name="label_id">ID</string>
+    <string name="content_desc_back">Back</string>
+    <string name="content_desc_favorite">Favorite</string>
+    <string name="content_desc_share">Share</string>
+</resources>

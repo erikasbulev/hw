@@ -21,3 +21,11 @@ dependencyResolutionManagement {
 
 rootProject.name = "Homework"
 include(":app")
+include(":domain")
+include(":data:network")
+include(":data:persistence")
+include(":data:repository")
+include(":ui:core")
+include(":ui:feed")
+include(":ui:favorites")
+include(":ui:detail")

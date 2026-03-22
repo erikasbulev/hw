@@ -1,0 +1,5 @@
+<resources>
+    <!-- Bottom navigation -->
+    <string name="label_feed">Feed</string>
+    <string name="label_favorites">Favorites</string>
+</resources>

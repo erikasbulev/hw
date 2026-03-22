@@ -1,0 +1,4 @@
+<resources>
+    <!-- Favorites screen -->
+    <string name="empty_favorites">No favorites yet</string>
+</resources>
