@@ -22,6 +22,7 @@ dependencyResolutionManagement {
 rootProject.name = "Homework"
 include(":app")
 include(":domain")
+include(":data:datasource")
 include(":data:network")
 include(":data:persistence")
 include(":data:repository")

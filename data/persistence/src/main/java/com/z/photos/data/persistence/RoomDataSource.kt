@@ -5,7 +5,7 @@ import com.z.photos.data.persistence.room.dao.LocalPhotoDao
 import com.z.photos.data.persistence.room.entities.FavoritePhoto
 import com.z.photos.data.persistence.room.entities.LocalPhoto
 import com.z.photos.data.persistence.room.entities.LocalPhotoWithFavorite
-import com.z.photos.data.persistence.datasource.LocalDataSource
+import com.z.photos.data.datasource.LocalDataSource
 import com.z.photos.domain.entities.Photo
 import com.z.photos.data.persistence.time.TimeProvider
 import javax.inject.Inject

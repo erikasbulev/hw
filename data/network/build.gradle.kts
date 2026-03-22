@@ -20,6 +20,7 @@ android {
 
 dependencies {
     implementation(project(":domain"))
+    implementation(project(":data:datasource"))
 
     implementation(libs.retrofit)
     implementation(libs.converter.gson)

@@ -1,4 +1,4 @@
-package com.z.photos.data.network.datasource
+package com.z.photos.data.datasource
 
 import com.z.photos.domain.entities.Photo
 

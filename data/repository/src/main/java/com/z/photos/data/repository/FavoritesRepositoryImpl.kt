@@ -1,7 +1,7 @@
 package com.z.photos.data.repository
 
-import com.z.photos.data.network.datasource.RemoteDataSource
-import com.z.photos.data.persistence.datasource.LocalDataSource
+import com.z.photos.data.datasource.LocalDataSource
+import com.z.photos.data.datasource.RemoteDataSource
 import com.z.photos.domain.entities.Photo
 import com.z.photos.domain.repositories.FavoritesRepository
 import javax.inject.Inject

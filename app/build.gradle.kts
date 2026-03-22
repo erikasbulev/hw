@@ -41,6 +41,7 @@ android {
 
 dependencies {
     implementation(project(":domain"))
+    implementation(project(":data:datasource"))
     implementation(project(":data:network"))
     implementation(project(":data:persistence"))
     implementation(project(":data:repository"))

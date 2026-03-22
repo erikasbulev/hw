@@ -20,6 +20,7 @@ android {
 
 dependencies {
     implementation(project(":domain"))
+    implementation(project(":data:datasource"))
 
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)

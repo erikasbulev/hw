@@ -1,7 +1,7 @@
 package com.z.photos.data.network
 
 import com.z.photos.data.network.api.PixelsApi
-import com.z.photos.data.network.datasource.RemoteDataSource
+import com.z.photos.data.datasource.RemoteDataSource
 import com.z.photos.data.network.entities.PhotoEntity
 import com.z.photos.domain.entities.Photo
 import retrofit2.HttpException
